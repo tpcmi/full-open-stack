@@ -44,3 +44,50 @@ setTimeout(arto.greet, 1000) // 报错
 
 setTimeout(arto.greet.bind(arto),1000)
 ```
+
+- 三种for循环
+```
+for(var i=0; i<5; i++){}
+# 针对数组
+for(let value of array){}
+# 针对对象里的属性
+for(let property in object){}
+
+```
+
+- 遍历数组的方法`forEach()`
+- 剩余参数操作符`...variable`
+
+- 箭头表达式简略写法：
+```
+const bornYear = () => new Date().getFullYear() - age
+
+const bornYear = () => {
+  return new Date().getFullYear() - age
+}
+```
+
+- 组件内数值变化不会自动去重新渲染，除非调用`refresh()`函数，利用状态钩子useState()，可以实现在值变化时，自动触发重新渲染的能力
+
+- react禁止直接改变状态，改变状态必须始终通过将状态设置为一个新的对象来完成。如果前一个状态对象的属性没有改变，它们需要简单地复制，这可以通过将这些属性复制到一个新的对象中，并将其设置为新的状态来完成
+
+```javascript
+//错误的写法
+const handleLeftClick = () => {
+  clicks.left++;
+  setClicks(clicks);
+}
+//正确写法一
+const handleLeftClick = () => {
+  const newClicks = {
+    left: clicks.left+1,
+    right: clicks.right
+  }
+  setClicks(newClicks)
+}
+//正确写法二
+const handleLeftClick = () => {
+  setClicks({...clicks, left: clicks.left+1})
+}
+
+```
