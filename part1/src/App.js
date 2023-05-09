@@ -104,6 +104,14 @@ const App = () => {
         setRight(right + 1);
     };
 
+    // fuction return function
+    const [value, setValue] = useState(10)
+    // 需要理解是怎样一步步写成箭头函数的简略形式的
+    const setToValue = (newValue) => () => {
+        console.log("newValue: ", newValue);
+        setValue(newValue)
+    }
+
     return (
         <>
             <Header course={course.name} />
@@ -111,9 +119,7 @@ const App = () => {
             <Total parts={course.parts} />
             <div>{counter}</div>
             <div>
-                <Button handleClick={increaseByOne} text="plus">
-                    {" "}
-                </Button>
+                <Button handleClick={increaseByOne} text="plus"></Button>
                 <Button handleClick={setToZero} text="zero"></Button>
                 <Button handleClick={decreaseByOne} text="minus"></Button>
             </div>
@@ -128,6 +134,15 @@ const App = () => {
                 <Button handleClick={handleRightClick} text='right'></Button>
                 {right}
                 <History allClicks={allClicks}></History>
+            </div>
+            <h2>
+                function return function:
+            </h2>
+            <div>
+                {value}
+                <Button handleClick={setToValue(1000)} text={"1000"}></Button>
+                <Button handleClick={setToValue(0)} text={"reset"}></Button>
+                <Button handleClick={setToValue(value + 1)} text={"plus one"}></Button>
             </div>
         </>
     );
