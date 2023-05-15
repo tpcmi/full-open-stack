@@ -120,4 +120,29 @@ const App = () => {
 }
 ```
 
+- 一个事件处理程序不能是对一个函数的调用，它必须是一个函数或对一个函数的引用，但是可以通过函数返回一个函数的形式，实现一个可以传参的工厂方法
+```javascript
+const hello = (who) => {
+    const handler = () => {
+      console.log('hello', who)
+    }
+    return handler
+  }
+// 去掉辅助变量，直接返回创建的函数
+const hello = (who) => {
+  return () => {
+    console.log('hello', who)
+  }
+}
+// 函数是由一个返回命令组成的，可以省略大括号，并使用箭头函数的更紧凑的语法
+const hello = (who) =>
+  () => {
+    console.log('hello', who)
+  }
+// 最后把所有的箭头写在同一行
+const hello = (who) => () => {
+  console.log('hello', who)
+}
+```
+
 ## part2
