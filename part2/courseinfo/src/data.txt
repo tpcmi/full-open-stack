@@ -1,0 +1,6 @@
+mark waffle 80 2
+mark blender 200 1
+mark knife 20 3
+bryce waffle 80 2
+bryce blender 200 1
+bryce knife 20 3
