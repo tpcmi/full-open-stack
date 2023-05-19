@@ -147,3 +147,7 @@ const hello = (who) => () => {
 
 ## part2
 - 由map方法生成的元素，必须包含一个唯一键`key`，react通过这个key来实现组件的渲染更新，同时建议不要使用map方法的第二个参数`idx`传入key中，可能会造成一些[奇怪的错误](https://robinpokorny.medium.com/index-as-a-key-is-an-anti-pattern-e0349aece318)
+- 条件运算符
+```javascript
+const result = condition ? val1 : val2
+```
