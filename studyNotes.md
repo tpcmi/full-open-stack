@@ -151,3 +151,5 @@ const hello = (who) => () => {
 ```javascript
 const result = condition ? val1 : val2
 ```
+- 在提交的表单中点击submit后，会刷新页面，而增加`event.preventDefault()`后，可以避免刷新
+- 在动态监控`input`标签时，如果仅设置`value`值，会导致`input`框无法输入，还需要配对`onChange`事件处理
