@@ -156,3 +156,5 @@ const result = condition ? val1 : val2
 - `npm install xxx`与`npm install xxx --save-dev`区别：前者是应用的运行依赖，后者是开发时的工具依赖
 - 在项目的根目录下创建一个名为.env的文件，并添加这一行FAST_REFRESH=false，使React自动注意到`index.js`变化
 - `useEffect`钩子可以实现对函数组件执行副作用，例如获取数据、设置订阅、以及手动改变React组件中的DOM，`useEffect`需要两个参数，第一个是函数，即每次渲染后执行的动作，第二个用于执行频率，如果传空列表，表示只用运行一次，否则会监测列表中的变量值的变化情况来执行函数
+- 遍历对象的key可以使用`Object.keys(xxx)`，遍历对象的value使用`object.values(xxx)`
+- 一些`secret key`配置相关的内容最好不要硬编码进代码中，一般推荐使用一个环境变量来保存，如在项目根目录下创建一个`.env`文件，以`REACT_APP_`开头存储变量，后续可以通过`process.env.REACT_APP_`的方式访问
