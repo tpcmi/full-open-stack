@@ -15,9 +15,8 @@ const Country = ({ speCountry }) => {
             <li key={l}>{l}</li>
           ))}
         </ul>
-            <img src={speCountry.flags.png} alt={speCountry.flags.alt}></img>
-            <Weather/>
-            
+        <img src={speCountry.flags.png} alt={speCountry.flags.alt}></img>
+        <Weather capital={speCountry.capital[0]} />
       </>
     );
   }
