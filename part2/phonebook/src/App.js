@@ -2,77 +2,105 @@ import { useState, useEffect } from "react";
 import Filter from "./components/Filter";
 import PersonForm from "./components/PersonForm";
 import Persons from "./components/Persons";
-import axios from "axios";
+import personService from "./services/persons";
 
 const App = () => {
-    const [persons, setPersons] = useState([]);
-    const [newName, setNewName] = useState("");
-    const [newPhone, setNewPhone] = useState("");
-    const [filterName, setNewfilter] = useState("");
+  const [persons, setPersons] = useState([]);
+  const [newName, setNewName] = useState("");
+  const [newPhone, setNewPhone] = useState("");
+  const [filterName, setNewfilter] = useState("");
 
-    useEffect(() => {
-        axios.get("http://localhost:3001/persons").then((res) => {
-            console.log(res);
-            setPersons(res.data);
-        });
-    }, []);
+  useEffect(() => {
+    personService.getAll().then((initialData) => {
+      setPersons(initialData);
+    });
+  }, []);
 
-    const handleNewName = (event) => {
-        setNewName(event.target.value);
+  const handleNewName = (event) => {
+    setNewName(event.target.value);
+  };
+
+  const handleNewPhone = (event) => {
+    setNewPhone(event.target.value);
+  };
+
+  const handleNewFilter = (event) => {
+    setNewfilter(event.target.value);
+  };
+
+  const handleNewPerson = (event) => {
+    event.preventDefault();
+
+    const personObject = {
+      name: newName,
+      number: newPhone,
     };
-
-    const handleNewPhone = (event) => {
-        setNewPhone(event.target.value);
-    };
-
-    const handleNewFilter = (event) => {
-        setNewfilter(event.target.value);
-    };
-
-    const handleNewPerson = (event) => {
-        event.preventDefault();
-        const isAdded = persons.reduce(
-            (flag, p) => (p.name === newName ? true : false),
-            false
-        );
-
-        if (isAdded) {
-            alert(`${newName} is already added to phonebook`);
-        } else {
-            const personObject = {
-                name: newName,
-                id: persons.length + 1,
-                number: newPhone,
-            };
-            setPersons(persons.concat(personObject));
+    // 判断是否为添加过
+    const isAdded = persons.reduce(
+      (flag, p) => (p.name === newName ? true : false),
+      false
+    );
+    // 添加过的人
+    if (isAdded) {
+      if (
+        window.confirm(
+          `${newName} is already added to phonebook, replace the old number with new one?`
+        )
+      ) {
+        personService
+          .update(persons.find((p) => p.name === newName).id, personObject)
+          .then((returnData) => {
+            setPersons(
+              persons.map((p) => (p.name === newName ? returnData : p))
+            );
             setNewName("");
             setNewPhone("");
-        }
-    };
+          });
+      }
+    }
+    // 没添加过的人
+    else {
+      personService.create(personObject).then((returnData) => {
+        setPersons(persons.concat(returnData));
+        setNewName("");
+        setNewPhone("");
+      });
+    }
+  };
 
-    const nameToShow = persons.filter((p) => {
-        if (p.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1) {
-            return true;
-        }
-        return false;
-    });
+  const nameToShow = persons.filter((p) =>
+    p.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ? true : false
+  );
 
-    return (
-        <div>
-            <h2>Phonebook</h2>
-            <Filter filterName={filterName} handleNewFilter={handleNewFilter} />
-            <h3>Add a new</h3>
-            <PersonForm
-                handleNewPerson={handleNewPerson}
-                newName={newName}
-                handleNewName={handleNewName}
-                newPhone={newPhone}
-                handleNewPhone={handleNewPhone}
-            />
-            <h3>Numbers</h3>
-            <Persons nameToShow={nameToShow} />
-        </div>
-    );
+  const deleteCurPerson = (id) => {
+    if (window.confirm(`Delete ${persons.find((n) => n.id === id).name} ?`)) {
+      personService.deletePerson(id);
+      setPersons(persons.filter((p) => (p.id !== id ? true : false)));
+    }
+  };
+
+  return (
+    <div>
+      <h2>Phonebook</h2>
+      <Filter filterName={filterName} handleNewFilter={handleNewFilter} />
+      <h3>Add a new</h3>
+      <PersonForm
+        handleNewPerson={handleNewPerson}
+        newName={newName}
+        handleNewName={handleNewName}
+        newPhone={newPhone}
+        handleNewPhone={handleNewPhone}
+      />
+      <h3>Numbers</h3>
+      {nameToShow.map((p) => (
+        <Persons
+          onePersonInfo={p}
+          key={p.id}
+          deleteCurPerson={() => deleteCurPerson(p.id)}
+        />
+      ))}
+    </div>
+  );
 };
 
 export default App;

@@ -144,7 +144,7 @@ const hello = (who) => () => {
   console.log('hello', who)
 }
 ```
-
+---
 ## part2
 - 由map方法生成的元素，必须包含一个唯一键`key`，react通过这个key来实现组件的渲染更新，同时建议不要使用map方法的第二个参数`idx`传入key中，可能会造成一些[奇怪的错误](https://robinpokorny.medium.com/index-as-a-key-is-an-anti-pattern-e0349aece318)
 - 条件运算符
@@ -158,3 +158,14 @@ const result = condition ? val1 : val2
 - `useEffect`钩子可以实现对函数组件执行副作用，例如获取数据、设置订阅、以及手动改变React组件中的DOM，`useEffect`需要两个参数，第一个是函数，即每次渲染后执行的动作，第二个用于执行频率，如果传空列表，表示只用运行一次，否则会监测列表中的变量值的变化情况来执行函数
 - 遍历对象的key可以使用`Object.keys(xxx)`，遍历对象的value使用`object.values(xxx)`
 - 一些`secret key`配置相关的内容最好不要硬编码进代码中，一般推荐使用一个环境变量来保存，如在项目根目录下创建一个`.env`文件，以`REACT_APP_`开头存储变量，后续可以通过`process.env.REACT_APP_`的方式访问
+- 数组的`find()`方法，返回数组中满足提供的测试函数的第一个元素的值
+- 对于定义的模块，由于对象的键值名和定义的变量名相同，可以采取简化的表达语法：
+```javascript
+export default { 
+  getAll: getAll, 
+  create: create, 
+  update: update 
+}
+// 简化成
+export default { getAll, create, update }
+```

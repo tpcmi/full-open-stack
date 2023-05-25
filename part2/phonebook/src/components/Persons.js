@@ -1,11 +1,8 @@
-const Persons = ({ nameToShow }) => (
-    <>
-        {nameToShow.map((p) => (
-            <p key={p.id}>
-                {p.name} {p.number}
-            </p>
-        ))}
-    </>
+const Persons = ({ onePersonInfo, deleteCurPerson }) => (
+  <div>
+        {onePersonInfo.name} {onePersonInfo.number}
+        <button onClick={deleteCurPerson}>delete</button>
+  </div>
 );
 
-export default Persons
+export default Persons;
