@@ -15,13 +15,15 @@ const App = () => {
 
   const handleEffect = (newCountry, timer) => {
     timer.current = Date.now();
+    // 这是一个深拷贝，所以每次timer.current变换都不会引起triggerTime跟着变化
     const triggerTime = timer.current;
     axios
       .get(`https://restcountries.com/v3.1/name/${newCountry}`)
       .then((res) => {
-        console.log(res.data);
-        console.log(triggerTime, timer.current);
-        setInfo(res.data);
+        console.log(newCountry,triggerTime,timer.current);
+        if (triggerTime === timer.current) {
+          setInfo(res.data);
+        }
       })
       .catch((err) => {
         console.log("wait for input");
