@@ -3,12 +3,14 @@ import Filter from "./components/Filter";
 import PersonForm from "./components/PersonForm";
 import Persons from "./components/Persons";
 import personService from "./services/persons";
+import Notification from "./components/Notification";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
   const [newPhone, setNewPhone] = useState("");
   const [filterName, setNewfilter] = useState("");
+  const [msg, setMsg] = useState(null);
 
   useEffect(() => {
     personService.getAll().then((initialData) => {
@@ -28,6 +30,15 @@ const App = () => {
     setNewfilter(event.target.value);
   };
 
+  const handleMsg = (content, color) => {
+    const msgObject = {
+      content: content,
+      color:color
+    }
+    setMsg(msgObject);
+    setTimeout(() => setMsg(null), 3000);
+  };
+
   const handleNewPerson = (event) => {
     event.preventDefault();
 
@@ -36,12 +47,21 @@ const App = () => {
       number: newPhone,
     };
     // 判断是否为添加过
-    const isAdded = persons.reduce(
-      (flag, p) => (p.name === newName ? true : false),
-      false
+    const notAdded = persons.reduce(
+      (flag, p) => (p.name === newName ? false & flag : true & flag),
+      true
     );
+    // 没添加过的人
+    if (notAdded) {
+      personService.create(personObject).then((returnData) => {
+        setPersons(persons.concat(returnData));
+        handleMsg(`Added ${newName}`,'green');
+        setNewName("");
+        setNewPhone("");
+      });
+    }
     // 添加过的人
-    if (isAdded) {
+    else {
       if (
         window.confirm(
           `${newName} is already added to phonebook, replace the old number with new one?`
@@ -53,18 +73,14 @@ const App = () => {
             setPersons(
               persons.map((p) => (p.name === newName ? returnData : p))
             );
+            handleMsg(`Updated ${newName} number to ${returnData.number}`,'green');
             setNewName("");
             setNewPhone("");
-          });
+          }).catch((err) => {
+            handleMsg(`Information of ${newName} has already been removed from server`, 'red')
+            setPersons(persons.filter((p) => (p.name !== newName ? true : false)));
+          });;
       }
-    }
-    // 没添加过的人
-    else {
-      personService.create(personObject).then((returnData) => {
-        setPersons(persons.concat(returnData));
-        setNewName("");
-        setNewPhone("");
-      });
     }
   };
 
@@ -74,7 +90,10 @@ const App = () => {
 
   const deleteCurPerson = (id) => {
     if (window.confirm(`Delete ${persons.find((n) => n.id === id).name} ?`)) {
-      personService.deletePerson(id);
+      personService.deletePerson(id).catch((err) => {
+        handleMsg(`Information of ${newName} has already been removed from server`, 'red')
+        setPersons(persons.filter((p) => (p.name !== newName ? true : false)));
+      });
       setPersons(persons.filter((p) => (p.id !== id ? true : false)));
     }
   };
@@ -82,6 +101,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={msg} />
       <Filter filterName={filterName} handleNewFilter={handleNewFilter} />
       <h3>Add a new</h3>
       <PersonForm
