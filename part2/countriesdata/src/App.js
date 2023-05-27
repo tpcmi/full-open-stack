@@ -3,6 +3,7 @@ import axios from "axios";
 
 import Filter from "./components/Filter";
 import Content from "./components/Content";
+import countryService from "./services/country";
 
 const App = () => {
   const [newCountry, setNewCountry] = useState("");
@@ -17,18 +18,13 @@ const App = () => {
     timer.current = Date.now();
     // 这是一个深拷贝，所以每次timer.current变换都不会引起triggerTime跟着变化
     const triggerTime = timer.current;
-    axios
-      .get(`https://restcountries.com/v3.1/name/${newCountry}`)
-      .then((res) => {
-        console.log(newCountry,triggerTime,timer.current);
+    if (newCountry !== "") {
+      countryService.getCountry(newCountry).then((countriesData) => {
         if (triggerTime === timer.current) {
-          setInfo(res.data);
+          setInfo(countriesData);
         }
-      })
-      .catch((err) => {
-        console.log("wait for input");
-        setInfo([]);
       });
+    }
   };
 
   useEffect(() => {
@@ -38,7 +34,7 @@ const App = () => {
   return (
     <>
       <Filter newCountry={newCountry} handleNewCountry={handleNewCountry} />
-      <Content info={info}/>
+      <Content info={info} />
     </>
   );
 };
