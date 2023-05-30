@@ -1,5 +1,7 @@
 const express = require("express");
 const app = express();
+const cors = require("cors")
+app.use(cors())
 app.use(express.json());
 
 let notes = [
@@ -22,14 +24,17 @@ let notes = [
     important: true,
   },
 ];
+// 探活
 app.get("/", (request, response) => {
   response.send("<h1>Hello World!</h1>");
 });
 
+// 获得所有笔记
 app.get("/api/notes", (request, response) => {
   response.json(notes);
 });
 
+// 获取指定笔记
 app.get("/api/notes/:id", (request, response) => {
   const id = request.params.id;
   const note = notes.find((note) => note.id.toString() === id);
@@ -40,12 +45,14 @@ app.get("/api/notes/:id", (request, response) => {
   }
 });
 
+// 删除指定笔记
 app.delete("/api/notes/:id", (request, response) => {
   const id = Number(request.params.id);
   notes = notes.filter((note) => note.id !== id);
   response.status(204).end();
 });
 
+// 新增笔记
 app.post("/api/notes", (request, response) => {
   const body = request.body;
 
@@ -66,7 +73,7 @@ app.post("/api/notes", (request, response) => {
   response.json(note);
 });
 
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
