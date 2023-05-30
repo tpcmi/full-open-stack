@@ -1,0 +1,16 @@
+get http://127.0.0.1:3001/api/persons
+###
+get http://127.0.0.1:3001/api/persons/1
+###
+delete http://127.0.0.1:3001/api/persons/4
+###
+post http://127.0.0.1:3001/api/persons
+Content-Type: application/json
+
+{
+    "name":"bb12",
+    "number":"123"
+}
+
+### 
+get http://127.0.0.1:3001/info

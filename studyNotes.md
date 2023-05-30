@@ -173,4 +173,6 @@ export default { getAll, create, update }
 ---
 ## part3
 - package.json 中依赖的版本一般会表示成‘^a.b.c’，其中`^`表示如果项目依赖关系更新，安装的依赖的版本至少是‘a.b.c’，可以安装更大的patch（最后一个数字）号或minor（中间的数字）号，但是第一个major号必须是相同的，因为新的版本会在major号相同的情况下，保证向后兼容，而major号不同后，就不能保证了；使用`npm update`更新依赖
-- 在express的路由里可以使用冒号语法定义参数`/api/notes/:i`，通过`request.params.id`取到id的值
+- 在express的路由里可以使用冒号语法定义参数`/api/notes/:id`，通过`request.params.id`取到id的值
+- 中间件按序执行，建议一般按照预期顺序去`use`；自定义中间件时，有三个参数`(request, response, next)`，其中最后执行`next()`，表示将控制权交给下一个中间件
+- 【工具】[morgan](https://github.com/expressjs/morgan)，是一个express中间件，可以终端输出请求日志信息
