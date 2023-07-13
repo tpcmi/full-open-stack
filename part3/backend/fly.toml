@@ -1,10 +1,10 @@
-# fly.toml app configuration file generated for billowing-sea-1070 on 2023-05-30T16:25:56+08:00
+# fly.toml app configuration file generated for restless-glade-433 on 2023-06-20T20:37:44+08:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-app = "billowing-sea-1070"
-primary_region = "hkg"
+app = "restless-glade-433"
+primary_region = "sin"
 
 [http_service]
   internal_port = 3000
@@ -12,5 +12,6 @@ primary_region = "hkg"
   auto_stop_machines = true
   auto_start_machines = true
   min_machines_running = 0
+
 [env]
-PORT="8080"
+  PORT = "3000" 

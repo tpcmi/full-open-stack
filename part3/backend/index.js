@@ -1,3 +1,10 @@
+/**
+ * fly auth login 本地关联
+ * fly launch 初始化一个app
+ * fly deploy 有代码更新重新发布
+ * fly open 打开页面
+ */
+
 const express = require("express");
 const app = express();
 const cors = require("cors")
@@ -72,6 +79,14 @@ app.post("/api/notes", (request, response) => {
   notes = notes.concat(note);
   response.json(note);
 });
+
+// 修改笔记数据
+app.put("/api/notes/:id", (request, response) => {
+  const body = request.body;
+  const id = Number(request.params.id);
+  notes = notes.map((note) => note.id===id?body:note);
+  response.status(200).json(body);
+ })
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
