@@ -177,4 +177,15 @@ export default { getAll, create, update }
 - 中间件按序执行，建议一般按照预期顺序去`use`；自定义中间件时，有三个参数`(request, response, next)`，其中最后执行`next()`，表示将控制权交给下一个中间件
 - 【工具】[morgan](https://github.com/expressjs/morgan)，是一个express中间件，可以终端输出请求日志信息
 - 【工具】在后端依赖里安装`cors`包，当做中间件来使用，可以允许来自所有源的请求
+- 【nodemon】为nojs项目监听代码文件变动，自动重启
 - `npm run build`构建生产包，一般建议线上环境面向用户时，使用生产包，这样包体积更小，性能损耗更小
+- `app.use(express.static('build'))` 将打好的包，放在server的根目录下，并在服务的中间件里加上这个处理，后续当服务收到请求时，会检查`build`文件下是否有对应的请求地址，有则返回，同时由于前后端都在一个文件下，可以修改前端的请求地址为相对地址，只保留接口即可
+```
+// 改之前
+// const baseUrl = "http://localhost:3001/api/notes";
+// const baseUrl = "https://restless-glade-433.fly.dev/api/notes"
+
+// 修改后
+const baseUrl = "/api/notes";
+```
+- 在package.json里增加`"proxy":"http://XXX.XXX"`配置，当app发出一个向服务端的请求时，会被重定向到指定的代理地址上

@@ -1,8 +1,12 @@
 const express = require("express");
 const morgan = require("morgan")
 const app = express();
+const cors = require("cors");
+app.use(cors())
 app.use(express.json());
+app.use(express.static("build"));
 
+// 终端打印每次请求
 app.use(morgan(function (tokens, req, res) {
   let postData 
   if (req.method === "POST") {
@@ -82,7 +86,7 @@ app.post("/api/persons", (request, response) => {
   response.status(400).json({ error: "name or number are required" });
 });
 
-app.get("/info", (reqest, response) => {
+app.get("/info", (request, response) => {
   const localDataNum = persons.length;
   const reqTime = new Date();
   response.send(
@@ -96,7 +100,7 @@ const unknownEndpoint = (request, response) => {
 
 app.use(unknownEndpoint)
 
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Server running on ${PORT}`);
 });
