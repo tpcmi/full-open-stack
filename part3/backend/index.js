@@ -7,24 +7,12 @@
 
 const express = require("express");
 const app = express();
-const cors = require("cors")
-const mongoose = require("mongoose");
+const cors = require("cors");
+const Note = require("./models/note");
 
-app.use(cors())
+app.use(cors());
 app.use(express.json());
-app.use(express.static('build'));
-
-const url = `mongodb+srv://tpcmi:${password}@cluster0.fv9nlii.mongodb.net/noteApp?retryWrites=true&w=majority`;
-
-mongoose.set("strictQuery", false);
-mongoose.connect(url);
-
-const noteSchema = new mongoose.Schema({
-  content: String,
-  important: Boolean,
-});
-
-const Note = mongoose.model("Note", noteSchema);
+app.use(express.static("build"));
 
 let notes = [
   {
@@ -53,7 +41,7 @@ app.get("/", (request, response) => {
 
 // 获得所有笔记
 app.get("/api/notes", (request, response) => {
-  Note.find({}).then(notes => response.json(notes))
+  Note.find({}).then((notes) => response.json(notes));
 });
 
 // 获取指定笔记
@@ -99,9 +87,9 @@ app.post("/api/notes", (request, response) => {
 app.put("/api/notes/:id", (request, response) => {
   const body = request.body;
   const id = Number(request.params.id);
-  notes = notes.map((note) => note.id===id?body:note);
+  notes = notes.map((note) => (note.id === id ? body : note));
   response.status(200).json(body);
- })
+});
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {

@@ -189,3 +189,10 @@ export default { getAll, create, update }
 const baseUrl = "/api/notes";
 ```
 - 在package.json里增加`"proxy":"http://XXX.XXX"`配置，当app发出一个向服务端的请求时，会被重定向到指定的代理地址上
+- 定义node的模块与ES6不同，通过在模块底部设置为module.exports的值，后续在别的文件里引入：
+```javascript
+// a.js
+module.exports = XXXX
+// b.js,路径不包含文件后缀
+const moduleA = require('path/to/a')
+```
