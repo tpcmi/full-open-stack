@@ -21,15 +21,24 @@ const phoneBookSchema = new mongoose.Schema({
 
 const PhoneBook = mongoose.model('PhoneBook', phoneBookSchema);
 
-const newBook = new PhoneBook({
-  name: newName,
-  number: newNumber
-});
+if (newName && newNumber) {
+  const newBook = new PhoneBook({
+    name: newName,
+    number: newNumber
+  });
 
-newBook.save().then(result => {
-  console.log(`added ${newName} number ${newNumber} to phone book`);
-  mongoose.connection.close();
-})
+  newBook.save().then(result => {
+    console.log(`added ${newName} number ${newNumber} to phone book`);
+    mongoose.connection.close();
+  })
+} else {
+  PhoneBook.find({}).then(result => {
+    console.log('phonebook:');
+    result.forEach(pb => console.log(pb.name,pb.number));
+    mongoose.connection.close();
+  })
+}
+
 
 
 
