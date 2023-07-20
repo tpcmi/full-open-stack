@@ -1,6 +1,6 @@
 get http://127.0.0.1:3001/api/persons
 ###
-get http://127.0.0.1:3001/api/persons/1
+get http://127.0.0.1:3001/api/persons/64b55928a6041c9b019437c9
 ###
 delete https://tp-phonebook-backend.fly.dev/api/persons/3
 ###
@@ -10,8 +10,8 @@ post http://127.0.0.1:3001/api/persons
 Content-Type: application/json
 
 {
-    "name":"bb12",
-    "number":"123"
+    "name":"tom",
+    "number":"123234345777"
 }
 
 ### 

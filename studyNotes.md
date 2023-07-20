@@ -196,3 +196,16 @@ module.exports = XXXX
 // b.js,路径不包含文件后缀
 const moduleA = require('path/to/a')
 ```
+- 通过`process.argv`获取命令行传入的参数组成的array
+- 一些常量字段不适合硬编码进代码中，通常是通过环境变量传入，以下举例两种方法
+```javascript
+MONGODB_URI=address_here npm run dev
+```
+```javascript
+/**
+ * npm install dotenv
+ * 根目录下创建.env文件，将环境变量写在文件里
+ * */ 
+require('dotenv').config()
+const url = process.env.MONGODB_URI
+```

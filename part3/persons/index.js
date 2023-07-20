@@ -1,25 +1,32 @@
+require("dotenv").config();
 const express = require("express");
-const morgan = require("morgan")
+const morgan = require("morgan");
 const app = express();
 const cors = require("cors");
-app.use(cors())
+const PhoneBook = require("./models/phoneBook");
+app.use(cors());
 app.use(express.json());
 app.use(express.static("build"));
 
 // 终端打印每次请求
-app.use(morgan(function (tokens, req, res) {
-  let postData 
-  if (req.method === "POST") {
-    postData = req.body
-  }
-  return [
-    tokens.method(req, res),
-    tokens.url(req, res),
-    tokens.status(req, res),
-    tokens.res(req, res, 'content-length'), '-',
-    tokens['response-time'](req, res), 'ms', JSON.stringify(postData)
-  ].join(' ')
-}))
+app.use(
+  morgan(function (tokens, req, res) {
+    let postData;
+    if (req.method === "POST") {
+      postData = req.body;
+    }
+    return [
+      tokens.method(req, res),
+      tokens.url(req, res),
+      tokens.status(req, res),
+      tokens.res(req, res, "content-length"),
+      "-",
+      tokens["response-time"](req, res),
+      "ms",
+      JSON.stringify(postData),
+    ].join(" ");
+  })
+);
 
 let persons = [
   {
@@ -45,16 +52,11 @@ let persons = [
 ];
 
 app.get("/api/persons", (request, response) => {
-  response.json(persons);
+  PhoneBook.find({}).then((pb) => response.json(pb));
 });
 
 app.get("/api/persons/:id", (request, response) => {
-  const id = Number(request.params.id);
-  const data = persons.find((p) => p.id === id);
-  if (data) {
-    return response.json(data);
-  }
-  response.status(400).json({ error: "not exist" });
+  PhoneBook.findById(request.params.id).then((pb) => response.json(pb));
 });
 
 app.delete("/api/persons/:id", (request, response) => {
@@ -64,26 +66,25 @@ app.delete("/api/persons/:id", (request, response) => {
 });
 
 const generateId = () => {
-  const maxId = persons.length>0?Math.max(...persons.map((p) => p.id)):0;
+  const maxId = persons.length > 0 ? Math.max(...persons.map((p) => p.id)) : 0;
   return maxId + 1;
 };
 app.post("/api/persons", (request, response) => {
   const data = request.body;
 
   if (data.name && data.number) {
-    const hasAdded = persons.find(p => p.name === data.name)
-    if (hasAdded) {
-      return response.status(400).json({error:"name must be unique"})
-    }
-    const newData = {
+    // const hasAdded = persons.find((p) => p.name === data.name);
+    // if (hasAdded) {
+    //   return response.status(400).json({ error: "name must be unique" });
+    // }
+    const phoneBook = PhoneBook({
       name: data.name,
       number: data.number,
-      id: generateId(),
-    };
-    persons = persons.concat(newData);
-    return response.json(newData);
+    });
+    phoneBook.save().then((result) => response.json(result));
+  } else {
+    response.status(400).json({ error: "name or number are required" });
   }
-  response.status(400).json({ error: "name or number are required" });
 });
 
 app.get("/info", (request, response) => {
@@ -95,12 +96,12 @@ app.get("/info", (request, response) => {
 });
 
 const unknownEndpoint = (request, response) => {
-  response.status(404).send({ error: 'unknown endpoint' })
-}
+  response.status(404).send({ error: "unknown endpoint" });
+};
 
-app.use(unknownEndpoint)
+app.use(unknownEndpoint);
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT;
 app.listen(PORT, () => {
   console.log(`Server running on ${PORT}`);
 });

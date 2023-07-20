@@ -13,13 +13,12 @@ mongoose
     console.log("error connecting to MongoDB:", err.message);
   });
 
-const noteSchema = new mongoose.Schema({
-  content: String,
-  important: Boolean,
+const phoneBookSchema = new mongoose.Schema({
+  name: String,
+  number: String,
 });
 
-// 删除不需要的字段
-noteSchema.set("toJSON", {
+phoneBookSchema.set("toJSON", {
   transform: (document, returnedObject) => {
     returnedObject.id = returnedObject._id.toString();
     delete returnedObject._id;
@@ -27,4 +26,4 @@ noteSchema.set("toJSON", {
   },
 });
 
-module.exports = mongoose.model("Note", noteSchema);
+module.exports = mongoose.model("PhoneBook", phoneBookSchema);
