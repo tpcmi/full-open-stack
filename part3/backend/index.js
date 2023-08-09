@@ -46,6 +46,7 @@ app.get("/api/notes", (request, response) => {
 });
 
 // 获取指定笔记
+
 app.get("/api/notes/:id", (request, response, next) => {
   Note.findById(request.params.id)
     .then((note) => {
