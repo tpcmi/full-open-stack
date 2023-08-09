@@ -28,47 +28,61 @@ app.use(
   })
 );
 
-let persons = [
-  {
-    id: 1,
-    name: "Arto Hellas",
-    number: "040-123456",
-  },
-  {
-    id: 2,
-    name: "Ada Lovelace",
-    number: "39-44-5323523",
-  },
-  {
-    id: 3,
-    name: "Dan Abramov",
-    number: "12-43-234345",
-  },
-  {
-    id: 4,
-    name: "Mary Poppendieck",
-    number: "39-23-6423122",
-  },
-];
+// let persons = [
+//   {
+//     id: 1,
+//     name: "Arto Hellas",
+//     number: "040-123456",
+//   },
+//   {
+//     id: 2,
+//     name: "Ada Lovelace",
+//     number: "39-44-5323523",
+//   },
+//   {
+//     id: 3,
+//     name: "Dan Abramov",
+//     number: "12-43-234345",
+//   },
+//   {
+//     id: 4,
+//     name: "Mary Poppendieck",
+//     number: "39-23-6423122",
+//   },
+// ];
 
 app.get("/api/persons", (request, response) => {
   PhoneBook.find({}).then((pb) => response.json(pb));
 });
 
 app.get("/api/persons/:id", (request, response) => {
-  PhoneBook.findById(request.params.id).then((pb) => response.json(pb));
+  PhoneBook.findById(request.params.id)
+    .then((pb) => {
+      if (pb) {
+        response.json(pb);
+      } else {
+        response.status(404).end();
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+      response.status(500).end();
+    });
 });
 
 app.delete("/api/persons/:id", (request, response) => {
-  const id = Number(request.params.id);
-  persons = persons.filter((p) => p.id !== id);
+  const id = request.params.id;
+  console.log("id:", id);
+  PhoneBook.findByIdAndDelete(id).then((res) => {
+    console.log("deleted:", res);
+  });
   response.status(204).end();
 });
 
-const generateId = () => {
-  const maxId = persons.length > 0 ? Math.max(...persons.map((p) => p.id)) : 0;
-  return maxId + 1;
-};
+// const generateId = () => {
+//   const maxId = persons.length > 0 ? Math.max(...persons.map((p) => p.id)) : 0;
+//   return maxId + 1;
+// };
 app.post("/api/persons", (request, response) => {
   const data = request.body;
 
@@ -88,11 +102,12 @@ app.post("/api/persons", (request, response) => {
 });
 
 app.get("/info", (request, response) => {
-  const localDataNum = persons.length;
-  const reqTime = new Date();
-  response.send(
-    `<p>PhoneBook has info for ${localDataNum} people</p><p>${reqTime}</p>`
-  );
+  PhoneBook.find({}).then((pb) => {
+    const reqTime = new Date();
+    response.send(
+      `<p>PhoneBook has info for ${pb.length} people</p><p>${reqTime}</p>`
+    );
+  });
 });
 
 const unknownEndpoint = (request, response) => {
