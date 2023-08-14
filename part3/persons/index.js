@@ -28,34 +28,11 @@ app.use(
   })
 );
 
-// let persons = [
-//   {
-//     id: 1,
-//     name: "Arto Hellas",
-//     number: "040-123456",
-//   },
-//   {
-//     id: 2,
-//     name: "Ada Lovelace",
-//     number: "39-44-5323523",
-//   },
-//   {
-//     id: 3,
-//     name: "Dan Abramov",
-//     number: "12-43-234345",
-//   },
-//   {
-//     id: 4,
-//     name: "Mary Poppendieck",
-//     number: "39-23-6423122",
-//   },
-// ];
-
 app.get("/api/persons", (request, response) => {
   PhoneBook.find({}).then((pb) => response.json(pb));
 });
 
-app.get("/api/persons/:id", (request, response) => {
+app.get("/api/persons/:id", (request, response, next) => {
   PhoneBook.findById(request.params.id)
     .then((pb) => {
       if (pb) {
@@ -64,19 +41,17 @@ app.get("/api/persons/:id", (request, response) => {
         response.status(404).end();
       }
     })
-    .catch((err) => {
-      console.log(err);
-      response.status(500).end();
-    });
+    .catch(error => next(error));
 });
 
-app.delete("/api/persons/:id", (request, response) => {
-  const id = request.params.id;
-  console.log("id:", id);
-  PhoneBook.findByIdAndDelete(id).then((res) => {
-    console.log("deleted:", res);
-  });
-  response.status(204).end();
+app.delete("/api/persons/:id", (request, response, next) => {
+  PhoneBook.findByIdAndDelete(request.params.id)
+    .then((res) => {
+      response.status(204).end();
+    })
+    .catch((error) => {
+      next(error);
+    });
 });
 
 // const generateId = () => {
@@ -101,6 +76,21 @@ app.post("/api/persons", (request, response) => {
   }
 });
 
+app.put("/api/persons/:id", (request, response, next) => {
+  const data = request.body;
+  const phoneBook = {
+    name: data.name,
+    number: data.number,
+  };
+  PhoneBook.findByIdAndUpdate(request.params.id, phoneBook, { new: true })
+    .then((updatedPhoneBoook) => {
+      response.json(updatedPhoneBoook);
+    })
+    .catch((error) => {
+      next(error);
+    });
+});
+
 app.get("/info", (request, response) => {
   PhoneBook.find({}).then((pb) => {
     const reqTime = new Date();
@@ -115,6 +105,16 @@ const unknownEndpoint = (request, response) => {
 };
 
 app.use(unknownEndpoint);
+
+const errorHandler = (error, request, response, next) => {
+  console.log(error.message);
+  if (error.name === "CastError") {
+    return response.status(400).send({ error: "malformatted id" });
+  }
+  next(error);
+};
+
+app.use(errorHandler);
 
 const PORT = process.env.PORT;
 app.listen(PORT, () => {

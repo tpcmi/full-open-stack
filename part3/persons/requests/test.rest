@@ -2,7 +2,7 @@ get http://127.0.0.1:3001/api/persons
 ###
 get http://127.0.0.1:3001/api/persons/64b55928a6041c9b0194
 ###
-delete http://127.0.0.1:3001/api/persons/64cf4757829c1a1129c37971
+delete http://127.0.0.1:3001/api/persons/64b88f513c78efe0ffb5c16
 ###
 get https://tp-phonebook-backend.fly.dev/api/persons/
 ###
@@ -16,3 +16,12 @@ Content-Type: application/json
 
 ### 
 get http://127.0.0.1:3001/info
+###
+put http://127.0.0.1:3001/api/persons/64b55928a6041c9b019437c9
+Content-Type: application/json
+
+{
+    "name":"tomic",
+    "number":"12234564567"
+}
+
