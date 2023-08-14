@@ -82,6 +82,7 @@ app.put("/api/persons/:id", (request, response, next) => {
     name: data.name,
     number: data.number,
   };
+  // {new: true} 代表返回值将是update之后的值，否则返回修改前的值
   PhoneBook.findByIdAndUpdate(request.params.id, phoneBook, { new: true })
     .then((updatedPhoneBoook) => {
       response.json(updatedPhoneBoook);
