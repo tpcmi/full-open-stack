@@ -209,3 +209,4 @@ MONGODB_URI=address_here npm run dev
 require('dotenv').config()
 const url = process.env.MONGODB_URI
 ```
+- 在请求中，对于异常处理，可以采用另写中间件的方式，中间件函数会承接四个参数，`error、request、response、next`，中间件函数必须是最后加载的中间件

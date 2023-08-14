@@ -2,6 +2,14 @@ POST http://127.0.0.1:3001/api/notes
 Content-Type:application/json
 
 {
-    "content":"Hello for backend",
+    "content":"Hello Everyone",
+    "important":false
+}
+###
+PUT http://127.0.0.1:3001/api/notes/64da1ed5aceed233ca58c662
+Content-Type:application/json
+
+{
+    "content":"Hello Only You",
     "important":true
 }

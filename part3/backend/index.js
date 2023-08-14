@@ -7,6 +7,7 @@
 
 require("dotenv").config();
 const express = require("express");
+const morgan = require("morgan");
 const app = express();
 const cors = require("cors");
 const Note = require("./models/note");
@@ -15,26 +16,25 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static("build"));
 
-let notes = [
-  {
-    id: 1,
-    content: "HTML is easy",
-    date: "2022-05-30T17:30:31.098Z",
-    important: true,
-  },
-  {
-    id: 2,
-    content: "Browser can execute only Javascript",
-    date: "2022-05-30T18:39:34.091Z",
-    important: false,
-  },
-  {
-    id: 3,
-    content: "GET and POST are the most important methods of HTTP protocol",
-    date: "2022-05-30T19:20:14.298Z",
-    important: true,
-  },
-];
+app.use(
+  morgan(function (tokens, req, res) {
+    let postData;
+    if (req.method === "POST") {
+      postData = req.body;
+    }
+    return [
+      tokens.method(req, res),
+      tokens.url(req, res),
+      tokens.status(req, res),
+      tokens.res(req, res, "content-length"),
+      "-",
+      tokens["response-time"](req, res),
+      "ms",
+      JSON.stringify(postData),
+    ].join(" ");
+  })
+);
+
 // 探活
 app.get("/", (request, response) => {
   response.send("<h1>Hello World!</h1>");
@@ -46,7 +46,6 @@ app.get("/api/notes", (request, response) => {
 });
 
 // 获取指定笔记
-
 app.get("/api/notes/:id", (request, response, next) => {
   Note.findById(request.params.id)
     .then((note) => {
@@ -60,10 +59,12 @@ app.get("/api/notes/:id", (request, response, next) => {
 });
 
 // 删除指定笔记
-app.delete("/api/notes/:id", (request, response) => {
-  const id = Number(request.params.id);
-  notes = notes.filter((note) => note.id !== id);
-  response.status(204).end();
+app.delete("/api/notes/:id", (request, response, next) => {
+  Note.findByIdAndDelete(request.params.id)
+    .then(result => {
+    response.status(204).end();
+    })
+    .catch((error) => next(error));
 });
 
 // 新增笔记
@@ -83,11 +84,19 @@ app.post("/api/notes", (request, response) => {
 });
 
 // 修改笔记数据
-app.put("/api/notes/:id", (request, response) => {
+app.put("/api/notes/:id", (request, response, next) => {
   const body = request.body;
-  const id = Number(request.params.id);
-  notes = notes.map((note) => (note.id === id ? body : note));
-  response.status(200).json(body);
+  const note = {
+    content: body.content,
+    important: body.important,
+  };
+  Note.findByIdAndUpdate(request.params.id, note, { new: true })
+    .then((updateNote) => {
+      response.json(updateNote);
+    })
+    .catch((error) => {
+      next(error);
+    });
 });
 
 const errorHandler = (error, request, response, next) => {
