@@ -3,6 +3,7 @@
  * fly launch 初始化一个app
  * fly deploy 有代码更新重新发布
  * fly open 打开页面
+ * fly secrets set MONGODB_URI='xxxx' 设置环境变量
  */
 
 require("dotenv").config();
@@ -61,36 +62,40 @@ app.get("/api/notes/:id", (request, response, next) => {
 // 删除指定笔记
 app.delete("/api/notes/:id", (request, response, next) => {
   Note.findByIdAndDelete(request.params.id)
-    .then(result => {
-    response.status(204).end();
+    .then((result) => {
+      response.status(204).end();
     })
     .catch((error) => next(error));
 });
 
 // 新增笔记
-app.post("/api/notes", (request, response) => {
+app.post("/api/notes", (request, response, next) => {
   const body = request.body;
-
-  if (!body.content) {
-    return response.status(400).json({ error: "content missing" });
-  }
+  /** 在schema处增加表单验证，此处就不再验证 */
+  // if (!body.content) {
+  //   return response.status(400).json({ error: "content missing" });
+  // }
 
   const note = new Note({
     content: body.content,
     important: body.important || false,
   });
 
-  note.save().then((savedNote) => response.json(savedNote));
+  note
+    .save()
+    .then((savedNote) => response.json(savedNote))
+    .catch((error) => next(error));
 });
 
 // 修改笔记数据
 app.put("/api/notes/:id", (request, response, next) => {
-  const body = request.body;
-  const note = {
-    content: body.content,
-    important: body.important,
-  };
-  Note.findByIdAndUpdate(request.params.id, note, { new: true })
+  const { content, important } = request.body;
+
+  Note.findByIdAndUpdate(
+    request.params.id,
+    { content, important },
+    { new: true, runValidators:true, context:'query' }
+  )
     .then((updateNote) => {
       response.json(updateNote);
     })
@@ -100,17 +105,19 @@ app.put("/api/notes/:id", (request, response, next) => {
 });
 
 const errorHandler = (error, request, response, next) => {
-  console.error(error.message)
+  console.error(error.message);
 
-  if (error.name === 'CastError') {
-    return response.status(400).send({ error: 'malformatted id' })
-  } 
+  if (error.name === "CastError") {
+    return response.status(400).send({ error: "malformatted id" });
+  } else if (error.name === "ValidationError") {
+    return response.status(400).json({ error: error.message });
+  }
 
-  next(error)
-}
+  next(error);
+};
 
 // this has to be the last loaded middleware.
-app.use(errorHandler)
+app.use(errorHandler);
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

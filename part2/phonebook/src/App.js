@@ -58,6 +58,8 @@ const App = () => {
         handleMsg(`Added ${newName}`,'green');
         setNewName("");
         setNewPhone("");
+      }).catch((err) => {
+        handleMsg(err.response.data.error, 'red')
       });
     }
     // 添加过的人

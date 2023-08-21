@@ -153,7 +153,7 @@ const result = condition ? val1 : val2
 ```
 - 在提交的表单中点击submit后，会刷新页面，而增加`event.preventDefault()`后，可以避免刷新
 - 在动态监控`input`标签时，如果仅设置`value`值，会导致`input`框无法输入，还需要配对`onChange`事件处理
-- `npm install xxx`与`npm install xxx --save-dev`区别：前者是应用的运行依赖，后者是开发时的工具依赖
+- `npm install xxx`与`npm install xxx --save-dev`区别：前者是应用的运行依赖，后者是开发时的工具依赖，打包时，开发依赖的包不会打包进生产环境包
 - 在项目的根目录下创建一个名为.env的文件，并添加这一行FAST_REFRESH=false，使React自动注意到`index.js`变化
 - `useEffect`钩子可以实现对函数组件执行副作用，例如获取数据、设置订阅、以及手动改变React组件中的DOM，`useEffect`需要两个参数，第一个是函数，即每次渲染后执行的动作，第二个用于执行频率，如果传空列表，表示只用运行一次，否则会监测列表中的变量值的变化情况来执行函数
 - 遍历对象的key可以使用`Object.keys(xxx)`，遍历对象的value使用`object.values(xxx)`
@@ -210,3 +210,4 @@ require('dotenv').config()
 const url = process.env.MONGODB_URI
 ```
 - 在请求中，对于异常处理，可以采用另写中间件的方式，中间件函数会承接四个参数，`error、request、response、next`，中间件函数必须是最后加载的中间件
+- 可以在schema处增加表单验证

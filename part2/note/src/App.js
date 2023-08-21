@@ -5,17 +5,19 @@ import Notification from "./components/Notification";
 
 const Footer = () => {
   const footerStyle = {
-    color: 'green',
-    fontStyle: 'italic',
-    fontSize: 16
-  }
+    color: "green",
+    fontStyle: "italic",
+    fontSize: 16,
+  };
   return (
     <div style={footerStyle}>
       <br />
-      <em>Note app, Department of Computer Science, University of Helsinki 2022</em>
+      <em>
+        Note app, Department of Computer Science, University of Helsinki 2022
+      </em>
     </div>
-  )
-}
+  );
+};
 
 const App = () => {
   const [notes, setNotes] = useState([]);
@@ -38,12 +40,19 @@ const App = () => {
       content: newNote,
       important: Math.random() < 0.5,
     };
-
-    noteService.create(noteObject).then((returnedNote) => {
-      //返回一个新的数组
-      setNotes(notes.concat(returnedNote));
-      setNewNote("");
-    });
+    noteService
+      .create(noteObject)
+      .then((returnedNote) => {
+        //返回一个新的数组
+        setNotes(notes.concat(returnedNote));
+        setNewNote("");
+      })
+      .catch((error) => {
+        setErrorMessage(error.response.data.error);
+        setTimeout(() => {
+          setErrorMessage(null);
+        }, 5000);
+      });
   };
 
   const handleNoteChange = (event) => {
@@ -94,7 +103,7 @@ const App = () => {
         <input value={newNote} onChange={handleNoteChange} />
         <button type="submit">save</button>
       </form>
-      <Footer/>
+      <Footer />
     </div>
   );
 };

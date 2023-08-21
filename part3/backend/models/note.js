@@ -14,7 +14,12 @@ mongoose
   });
 
 const noteSchema = new mongoose.Schema({
-  content: String,
+  /** 表单验证 */
+  content: {
+    type: String,
+    minLength: 5,
+    required: true
+  },
   important: Boolean,
 });
 

@@ -41,12 +41,12 @@ app.get("/api/persons/:id", (request, response, next) => {
         response.status(404).end();
       }
     })
-    .catch(error => next(error));
+    .catch((error) => next(error));
 });
 
 app.delete("/api/persons/:id", (request, response, next) => {
   PhoneBook.findByIdAndDelete(request.params.id)
-    .then((res) => {
+    .then(() => {
       response.status(204).end();
     })
     .catch((error) => {
@@ -58,32 +58,32 @@ app.delete("/api/persons/:id", (request, response, next) => {
 //   const maxId = persons.length > 0 ? Math.max(...persons.map((p) => p.id)) : 0;
 //   return maxId + 1;
 // };
-app.post("/api/persons", (request, response) => {
-  const data = request.body;
+app.post("/api/persons", (request, response, next) => {
+  const { name, number } = request.body;
 
-  if (data.name && data.number) {
-    // const hasAdded = persons.find((p) => p.name === data.name);
-    // if (hasAdded) {
-    //   return response.status(400).json({ error: "name must be unique" });
-    // }
-    const phoneBook = PhoneBook({
-      name: data.name,
-      number: data.number,
-    });
-    phoneBook.save().then((result) => response.json(result));
-  } else {
-    response.status(400).json({ error: "name or number are required" });
-  }
+  // if (data.name && data.number) {
+  // const hasAdded = persons.find((p) => p.name === data.name);
+  // if (hasAdded) {
+  //   return response.status(400).json({ error: "name must be unique" });
+  // }
+  const phoneBook = PhoneBook({
+    name: name,
+    number: number,
+  });
+  phoneBook
+    .save()
+    .then((result) => response.json(result))
+    .catch((error) => next(error));
 });
 
 app.put("/api/persons/:id", (request, response, next) => {
-  const data = request.body;
-  const phoneBook = {
-    name: data.name,
-    number: data.number,
-  };
+  const { name, number } = request.body;
   // {new: true} 代表返回值将是update之后的值，否则返回修改前的值
-  PhoneBook.findByIdAndUpdate(request.params.id, phoneBook, { new: true })
+  PhoneBook.findByIdAndUpdate(
+    request.params.id,
+    { name, number },
+    { new: true, runValidators: true, context: "query" }
+  )
     .then((updatedPhoneBoook) => {
       response.json(updatedPhoneBoook);
     })
@@ -111,6 +111,8 @@ const errorHandler = (error, request, response, next) => {
   console.log(error.message);
   if (error.name === "CastError") {
     return response.status(400).send({ error: "malformatted id" });
+  } else if (error.name === "ValidationError") {
+    return response.status(400).json({ error: error.message });
   }
   next(error);
 };
