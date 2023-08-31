@@ -6,7 +6,6 @@
  * fly secrets set MONGODB_URI='xxxx' 设置环境变量
  */
 
-require("dotenv").config();
 const express = require("express");
 const morgan = require("morgan");
 const app = express();
@@ -118,4 +117,3 @@ const errorHandler = (error, request, response, next) => {
 
 // this has to be the last loaded middleware.
 app.use(errorHandler);
-const PORT = process.env.PORT;
