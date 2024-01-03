@@ -30,7 +30,14 @@ const object1 = {
 
 - 组件里传参的类型可以是数组和字符串，**传对象类型会报错**
 
-- 通过引用调用对象里的方法时，该方法失去了对原始this的引用，this的值变成了全局对象
+- this的值在函数被调用时，基于函数的调用方式决定的，通过引用调用对象里的方法时，该方法失去了对原始this的引用，this的值变成了全局对象
+```javascript
+// this指向obj
+obj.method()
+// this指向全局
+ref = obj.method
+ref()
+```
 - `setTimeout`函数去调用对象里的方法，也会导致this消失,此时的解决方法如下：
 ```javascript
 const arto = {
@@ -46,7 +53,7 @@ setTimeout(arto.greet.bind(arto),1000)
 ```
 
 - 三种for循环
-```
+```javascript
 for(var i=0; i<5; i++){}
 # 针对数组
 for(let value of array){}
@@ -59,7 +66,7 @@ for(let property in object){}
 - 剩余参数操作符`...variable`
 
 - 箭头表达式简略写法：
-```
+```javascript
 const bornYear = () => new Date().getFullYear() - age
 
 const bornYear = () => {
@@ -69,7 +76,7 @@ const bornYear = () => {
 
 - 组件内数值变化不会自动去重新渲染，除非调用`refresh()`函数，利用状态钩子useState()，可以实现在值变化时，自动触发重新渲染的能力
 
-- react禁止直接改变状态，改变状态必须始终通过将状态设置为一个新的对象来完成。如果前一个状态对象的属性没有改变，它们需要简单地复制，这可以通过将这些属性复制到一个新的对象中，并将其设置为新的状态来完成
+- react禁止直接改变状态，改变状态必须始终通过将状态设置为一个`新的对象`来完成。如果前一个状态对象的属性没有改变，它们需要简单地复制，这可以通过将这些属性复制到一个新的对象中，并将其设置为新的状态来完成
 
 ```javascript
 //错误的写法
