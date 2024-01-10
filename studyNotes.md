@@ -5,6 +5,12 @@
 - 注意在所有 `label`元素上使用 `for`属性；它是将标签链接到表单控件的一种正规方式。这个属性引用对应的表单控件的 `id`。
 ---
 ## Part1
+- 创建react-app的方法：
+```
+npm create react-app
+npm create vite@latest part1 -- --template react
+```
+
 - React组件名必须是大写，否则会被识别为普通的html标签
 
 - 组件内必须包含一个根元素，否则会报错：
