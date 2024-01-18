@@ -80,23 +80,23 @@ const App = () => {
             setNewPhone("");
           }).catch((err) => {
             handleMsg(`Information of ${newName} has already been removed from server`, 'red')
-            setPersons(persons.filter((p) => (p.name !== newName ? true : false)));
-          });;
+            setPersons(persons.filter((p) => (p.name !== newName)));
+          });
       }
     }
   };
 
   const nameToShow = persons.filter((p) =>
-    p.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ? true : false
+    p.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
   );
 
   const deleteCurPerson = (id) => {
     if (window.confirm(`Delete ${persons.find((n) => n.id === id).name} ?`)) {
       personService.deletePerson(id).catch((err) => {
         handleMsg(`Information of ${newName} has already been removed from server`, 'red')
-        setPersons(persons.filter((p) => (p.name !== newName ? true : false)));
+        setPersons(persons.filter((p) => (p.name !== newName)));
       });
-      setPersons(persons.filter((p) => (p.id !== id ? true : false)));
+      setPersons(persons.filter((p) => (p.id !== id)));
     }
   };
 

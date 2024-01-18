@@ -182,6 +182,7 @@ export default {
 // 简化成
 export default { getAll, create, update }
 ```
+- 组件的入参不要忘记用 `{}` ，具有解构的作用，否则入参会被额外多包裹一层
 
 ---
 ## part3
