@@ -182,6 +182,7 @@ export default {
 // 简化成
 export default { getAll, create, update }
 ```
+- `import a from A` 与 `import {a} from A`是有区别的，前者是将导出A模块所有内容为a，后者是导入A模块中指定的一部分
 - 组件的入参不要忘记用 `{}` ，具有解构的作用，否则入参会被额外多包裹一层
 
 ---
