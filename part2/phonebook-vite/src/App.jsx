@@ -1,34 +1,31 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import personServices from "./services/persons"
 
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [filterName, setFilterName] = useState("");
-  const dataUrlPath = "http://localhost:3001/persons"
 
   useEffect(() => { 
     console.log('effect');
-    axios
-      .get(dataUrlPath)
-      .then((response) => {
-        console.log("response fullfilled");
-        setPersons(response.data)
-      })
-  },[])
+    personServices.getAll(returnedData => setPersons(returnedData))
+  }, [])
+  
   const addName = (event) => {
     event.preventDefault();
     const existed = persons.filter((p) => p.name === newName);
     if (existed.length) {
       alert(`${newName} is existed`);
     } else {
+      const newPerson = {
+        name: newName,
+        number: newNumber,
+        id: persons.length + 1,
+      }
+      personServices.addNewPerson(newPerson)
       setPersons(
-        persons.concat({
-          name: newName,
-          number: newNumber,
-          id: persons.length + 1,
-        })
+        persons.concat()
       );
     }
     setNewName("");
