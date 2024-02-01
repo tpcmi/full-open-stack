@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import personServices from "./services/persons"
+import personServices from "./services/persons";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -7,26 +7,30 @@ const App = () => {
   const [newNumber, setNewNumber] = useState("");
   const [filterName, setFilterName] = useState("");
 
-  useEffect(() => { 
-    console.log('effect');
-    personServices.getAll(returnedData => setPersons(returnedData))
-  }, [])
-  
+  useEffect(() => {
+    personServices.getAll().then((returnedData) => {
+      setPersons(returnedData);
+    });
+  }, []);
+
   const addName = (event) => {
     event.preventDefault();
-    const existed = persons.filter((p) => p.name === newName);
-    if (existed.length) {
+    const personExisted = persons.filter((p) => p.name === newName);
+    const notBlank = newName && newNumber ? true : false;
+    if (!notBlank) {
+      alert("Input cannot be empty");
+    } else if (personExisted.length) {
       alert(`${newName} is existed`);
     } else {
-      const newPerson = {
-        name: newName,
-        number: newNumber,
-        id: persons.length + 1,
-      }
-      personServices.addNewPerson(newPerson)
-      setPersons(
-        persons.concat()
-      );
+      personServices
+        .addNewPerson({
+          name: newName,
+          number: newNumber,
+          id: (persons.length + 1).toString(),
+        })
+        .then((personData) => {
+          setPersons(persons.concat(personData));
+        });
     }
     setNewName("");
     setNewNumber("");
@@ -67,9 +71,14 @@ const App = () => {
       {persons
         .filter((p) => p.name.toLowerCase().includes(filterName.toLowerCase()))
         .map((p) => (
-          <p key={p.name}>
-            {p.name} {p.number}
-          </p>
+          <>
+            <p key={p.name}>
+              {p.name} {p.number}
+            </p>
+            <button onClick={() => personServices.deletePerson(p.id)}>
+              delete
+            </button>
+          </>
         ))}
     </div>
   );
