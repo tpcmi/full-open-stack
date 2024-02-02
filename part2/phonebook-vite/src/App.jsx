@@ -20,13 +20,36 @@ const App = () => {
     if (!notBlank) {
       alert("Input cannot be empty");
     } else if (personExisted.length) {
-      alert(`${newName} is existed`);
+      if (
+        window.confirm(
+          `${newName} is existed, replace the old number with a new one`
+        )
+      ) {
+        personServices
+          .updatePerson({
+            name: newName,
+            number: newNumber,
+            id: personExisted[0].id
+          })
+          .then((personData) => {
+            setPersons(
+              persons.map((p) => (p.name != personData.name ? p : personData))
+            );
+          });
+      } else {
+        personServices
+          .deletePerson(personExisted[0].id)
+          .then((personData) => {
+            setPersons(
+              persons.map((p) => (p.name != personData.name ? p : personData))
+            );
+          });
+      }
     } else {
       personServices
         .addNewPerson({
           name: newName,
           number: newNumber,
-          id: (persons.length + 1).toString(),
         })
         .then((personData) => {
           setPersons(persons.concat(personData));
@@ -46,6 +69,21 @@ const App = () => {
 
   function handleFilterName(event) {
     setFilterName(event.target.value);
+  }
+
+  function handleDeletePerson(id) {
+    const idExisted = persons.filter((p) => p.id === id);
+    if (!idExisted.length) {
+      alert("Person not found");
+      return;
+    } else if (
+      window.confirm(`Are you sure you want to delete ${idExisted[0].name}?`)
+    ) {
+      personServices.deletePerson(id).then((personData) => {
+        console.log(personData);
+        setPersons(persons.filter((p) => p.id !== personData.id));
+      });
+    }
   }
 
   return (
@@ -71,14 +109,12 @@ const App = () => {
       {persons
         .filter((p) => p.name.toLowerCase().includes(filterName.toLowerCase()))
         .map((p) => (
-          <>
-            <p key={p.name}>
-              {p.name} {p.number}
-            </p>
-            <button onClick={() => personServices.deletePerson(p.id)}>
+          <p key={p.name}>
+            {p.id}#:{p.name} {p.number}
+            <button key={p.name} onClick={() => handleDeletePerson(p.id)}>
               delete
             </button>
-          </>
+          </p>
         ))}
     </div>
   );
