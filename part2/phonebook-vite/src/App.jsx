@@ -6,6 +6,7 @@ const App = () => {
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [filterName, setFilterName] = useState("");
+  const [errorMessage, setErrorMessage] = useState(null);
 
   useEffect(() => {
     personServices.getAll().then((returnedData) => {
@@ -29,20 +30,17 @@ const App = () => {
           .updatePerson({
             name: newName,
             number: newNumber,
-            id: personExisted[0].id
+            id: personExisted[0].id,
           })
           .then((personData) => {
             setPersons(
               persons.map((p) => (p.name != personData.name ? p : personData))
             );
-          });
-      } else {
-        personServices
-          .deletePerson(personExisted[0].id)
-          .then((personData) => {
-            setPersons(
-              persons.map((p) => (p.name != personData.name ? p : personData))
-            );
+          })
+          .catch((error) => {
+            console.log(111);
+            console.log(error.response.data.error);
+            // setErrorMessage(error.response.data.error);
           });
       }
     } else {
@@ -53,6 +51,10 @@ const App = () => {
         })
         .then((personData) => {
           setPersons(persons.concat(personData));
+          setErrorMessage(`Added ${personData.name}`);
+          setTimeout(() => {
+            setErrorMessage(null);
+          }, 3000);
         });
     }
     setNewName("");
@@ -89,6 +91,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      {errorMessage !== null && <h3>{errorMessage}</h3>}
       <div>
         filter shown with:{" "}
         <input value={filterName} onChange={handleFilterName} />
