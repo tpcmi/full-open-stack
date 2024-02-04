@@ -37,10 +37,10 @@ const App = () => {
               persons.map((p) => (p.name != personData.name ? p : personData))
             );
           })
-          .catch((error) => {
-            console.log(111);
-            console.log(error.response.data.error);
-            // setErrorMessage(error.response.data.error);
+          .catch(() => {
+            setErrorMessage(
+              `Information of ${newName} has already been removed`
+            );
           });
       }
     } else {
@@ -52,11 +52,11 @@ const App = () => {
         .then((personData) => {
           setPersons(persons.concat(personData));
           setErrorMessage(`Added ${personData.name}`);
-          setTimeout(() => {
-            setErrorMessage(null);
-          }, 3000);
         });
     }
+    setTimeout(() => {
+      setErrorMessage(null);
+    }, 3000);
     setNewName("");
     setNewNumber("");
   };
@@ -81,10 +81,19 @@ const App = () => {
     } else if (
       window.confirm(`Are you sure you want to delete ${idExisted[0].name}?`)
     ) {
-      personServices.deletePerson(id).then((personData) => {
-        console.log(personData);
-        setPersons(persons.filter((p) => p.id !== personData.id));
-      });
+      personServices
+        .deletePerson(id)
+        .then((personData) => {
+          setPersons(persons.filter((p) => p.id !== personData.id));
+        })
+        .catch(() => {
+          setErrorMessage(
+            `Information of ${idExisted[0].name} has already been removed`
+          );
+          setTimeout(() => {
+            setErrorMessage(null);
+          }, 3000);
+        });
     }
   }
 
@@ -114,7 +123,7 @@ const App = () => {
         .map((p) => (
           <p key={p.name}>
             {p.id}#:{p.name} {p.number}
-            <button key={p.name} onClick={() => handleDeletePerson(p.id)}>
+            <button key={p.name} onClick={() => handleDeletePerson(p.id)} className="delBtn">
               delete
             </button>
           </p>
