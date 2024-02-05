@@ -189,10 +189,11 @@ export default { getAll, create, update }
 ## part3
 - package.json 中依赖的版本一般会表示成‘^a.b.c’，其中`^`表示如果项目依赖关系更新，安装的依赖的版本至少是‘a.b.c’，可以安装更大的patch（最后一个数字）号或minor（中间的数字）号，但是第一个major号必须是相同的，因为新的版本会在major号相同的情况下，保证向后兼容，而major号不同后，就不能保证了；使用`npm update`更新依赖
 - 在express的路由里可以使用冒号语法定义参数`/api/notes/:id`，通过`request.params.id`取到id的值
+- express的返回`.send()`方法，如果返回一个字符串，则默认`Content-Type`为`text/html`；`.json()`方法会返回一个`Content-Type`为`application/json`的响应（否则需要使用`JSON.stringify()`方法来转换一下对象返回）
 - 中间件按序执行，建议一般按照预期顺序去`use`；自定义中间件时，有三个参数`(request, response, next)`，其中最后执行`next()`，表示将控制权交给下一个中间件
 - 【工具】[morgan](https://github.com/expressjs/morgan)，是一个express中间件，可以终端输出请求日志信息
 - 【工具】在后端依赖里安装`cors`包，当做中间件来使用，可以允许来自所有源的请求
-- 【nodemon】为nojs项目监听代码文件变动，自动重启
+- 【工具】`nodemon`为node.js项目监听代码文件变动，自动重启，但是仅限于后端代码，前端的内容仍然需要手动刷新
 - `npm run build`构建生产包，一般建议线上环境面向用户时，使用生产包，这样包体积更小，性能损耗更小
 - `app.use(express.static('build'))` 将打好的包，放在server的根目录下，并在服务的中间件里加上这个处理，后续当服务收到请求时，会检查`build`文件下是否有对应的请求地址，有则返回，同时由于前后端都在一个文件下，可以修改前端的请求地址为相对地址，只保留接口即可
 ```
