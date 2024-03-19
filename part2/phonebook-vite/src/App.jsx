@@ -33,6 +33,7 @@ const App = () => {
             id: personExisted[0].id,
           })
           .then((personData) => {
+            console.log(personData);
             setPersons(
               persons.map((p) => (p.name != personData.name ? p : personData))
             );

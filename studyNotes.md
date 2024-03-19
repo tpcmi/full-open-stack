@@ -192,7 +192,7 @@ export default { getAll, create, update }
 - express的返回`.send()`方法，如果返回一个字符串，则默认`Content-Type`为`text/html`；`.json()`方法会返回一个`Content-Type`为`application/json`的响应（否则需要使用`JSON.stringify()`方法来转换一下对象返回）
 - 中间件按序执行，建议一般按照预期顺序去`use`；自定义中间件时，有三个参数`(request, response, next)`，其中最后执行`next()`，表示将控制权交给下一个中间件
 - 【工具】[morgan](https://github.com/expressjs/morgan)，是一个express中间件，可以终端输出请求日志信息
-- 【工具】在后端依赖里安装`cors`包，当做中间件来使用，可以允许来自所有源的请求
+- 【工具】在后端依赖里安装`cors`包，当做中间件来使用，可以允许来自所有源的请求，cors是可以配置的（允许的源和请求的方法）
 - 【工具】`nodemon`为node.js项目监听代码文件变动，自动重启，但是仅限于后端代码，前端的内容仍然需要手动刷新
 - `npm run build`构建生产包，一般建议线上环境面向用户时，使用生产包，这样包体积更小，性能损耗更小
 - `app.use(express.json())`使用express json解析器来将请求中的json数据解析为对象，否则会报错
