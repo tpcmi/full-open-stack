@@ -206,7 +206,7 @@ export default { getAll, create, update }
 // 修改后
 const baseUrl = "/api/notes";
 ```
-- 在package.json里增加`"proxy":"http://XXX.XXX"`配置，当app发出一个向服务端的请求时，会被重定向到指定的代理地址上
+- 由于上述url的改动，会导致前端的请求不通，可以在package.json里增加`"proxy":"http://XXX.XXX"`配置，当app发出一个向服务端的请求时，会被重定向到指定的代理地址上;或者vite.config.js里增加`proxy`配置，当请求的url以`/api`开头时，会重定向到`http://XXX.XXX`，
 - 定义node的模块与ES6不同，通过在模块底部设置为module.exports的值，后续在别的文件里引入：
 ```javascript
 // a.js

@@ -1,7 +1,7 @@
 import axios from "axios";
 
-// const urlPath = "/api/persons";
-const urlPath = "http://localhost:3000/api/persons";
+const urlPath = "/api/persons";
+// const urlPath = "http://localhost:3000/api/persons";
 
 const addNewPerson = (personInfo) => {
   const request = axios.post(urlPath, personInfo);
