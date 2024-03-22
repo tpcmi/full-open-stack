@@ -1,3 +1,5 @@
+require("dotenv").config();
+const Person= require("./models/person")
 const express = require("express");
 const morgan = require("morgan");
 const cors = require("cors");
@@ -33,16 +35,21 @@ let person = [
   },
 ];
 
-app.get("/info", (req, res) => {
+app.get("/info", async (req, res) => {
   const time = new Date().toString();
-  const content = `<p>Phonebook has info for ${person.length} people</p>
-  <p>${time}</p>`;
+  let content = `<p>${time}</p>`;
+  await Person.find({}).then((persons) => {
+    content += `<p>Phonebook has info for ${persons.length} people</p>`
+  })
   res.send(content);
 });
 
 app.get("/api/persons/:id?", (req, res) => {
   const id = Number(req.params.id);
   const specificPerson = person.find((p) => p.id === id);
+  Person.find({ id: req.params.id }).then((res) => {
+    console.log(res);
+  })
   if (specificPerson) {
     res.json(specificPerson);
   } else {
