@@ -228,4 +228,6 @@ require('dotenv').config()
 const url = process.env.MONGODB_URI
 ```
 - 在请求中，对于异常处理，可以采用另写中间件的方式，中间件函数会承接四个参数，`error、request、response、next`，中间件函数必须是最后加载的中间件
-- 可以在schema处增加表单验证
+- mongoose使用：
+  - 设置Schema，使用transform增加如toJSON方法，会影响返回的json数据，但需要注意的是，自己实际在使用的时候，这里的设置不影响数据的字段查找
+  - 可以在schema处增加表单验证
