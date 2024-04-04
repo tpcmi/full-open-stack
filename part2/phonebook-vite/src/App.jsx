@@ -53,6 +53,9 @@ const App = () => {
         .then((personData) => {
           setPersons(persons.concat(personData));
           setErrorMessage(`Added ${personData.name}`);
+        }).catch((err) => {
+          console.log(err);
+          setErrorMessage(err.response.data.error)
         });
     }
     setTimeout(() => {
@@ -85,7 +88,6 @@ const App = () => {
       personServices
         .deletePerson(id)
         .then(() => {
-          console.log(123);
           setPersons(persons.filter((p) => p.id !== id));
         })
         .catch(() => {

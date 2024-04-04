@@ -111,11 +111,12 @@ const unknownEndpoint = (request, response) => {
 app.use(unknownEndpoint);
 
 const errorHandler = (err, req, res, next) => {
-  console.log("123", err.name, err.message);
   if (err.name === "CastError") {
     return res.status(400).send({ error: "malformatted id" });
   } else if (err.name === "MongooseError") {
     return res.status(500).send("network error");
+  }else if (err.name === "ValidationError") {
+    return res.status(400).send({error:err.message});
   }
   next(err);
 };
