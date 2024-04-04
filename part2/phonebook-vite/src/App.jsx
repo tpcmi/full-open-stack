@@ -84,8 +84,9 @@ const App = () => {
     ) {
       personServices
         .deletePerson(id)
-        .then((personData) => {
-          setPersons(persons.filter((p) => p.id !== personData.id));
+        .then(() => {
+          console.log(123);
+          setPersons(persons.filter((p) => p.id !== id));
         })
         .catch(() => {
           setErrorMessage(
