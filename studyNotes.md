@@ -214,6 +214,7 @@ module.exports = XXXX
 // b.js,路径不包含文件后缀
 const moduleA = require('path/to/a')
 ```
+- `module.exports = A`和`module.exports = {A}`区别在于前者将整个部分的内容都替换为对象A，其它模块require时是直接获得A，后者是获得一个对象，对象有一个属性是A，后者在require时，也可以使用`const {A} = require("xxx")`来使用
 - 通过`process.argv`获取命令行传入的参数组成的array
 - 一些常量字段不适合硬编码进代码中，通常是通过环境变量传入，以下举例两种方法
 ```javascript
@@ -231,3 +232,15 @@ const url = process.env.MONGODB_URI
 - mongoose使用：
   - 设置Schema，使用transform增加如toJSON方法，会影响返回的json数据，但需要注意的是，自己实际在使用的时候，这里的设置不影响数据的字段查找
   - 可以在schema处增加表单验证
+
+--
+
+## part4
+- express 中的`Router`使用，将路由拆分到不同的文件里，方便管理，同时可以避免路由冲突，也简化了接口路径
+- 模块导出有两种方式：
+```javascript
+// 方式一：用于暴露一个对象
+const perseonRouter = require('./person')
+//方式二：用于暴露一个函数
+const {info, error} = require('./logger')  
+```

@@ -1,15 +1,4 @@
-require("dotenv").config();
 const mongoose = require("mongoose");
-
-const url = process.env.MONGODB_URL;
-mongoose
-  .connect(url)
-  .then((result) => {
-    console.log("Connected to MongoDB");
-  })
-  .catch((err) => {
-    console.log("Connect to MOngoDB error", err.message);
-  });
 
 const PersonSchema = new mongoose.Schema({
   name: {
@@ -20,11 +9,11 @@ const PersonSchema = new mongoose.Schema({
   number: {
     type: String,
     minLength: 8,
-    required: [true,'phone number is required'],
+    required: [true, "phone number is required"],
     validate: {
       validator: (num) => /\d{2,3}-\d{6}/.test(num),
-      message:props=>`${props.value} is not a valid phone number`
-    }
+      message: (props) => `${props.value} is not a valid phone number`,
+    },
   },
 });
 
